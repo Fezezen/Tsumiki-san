@@ -1,0 +1,17 @@
+{
+  "name": "discord_bot",
+  "version": "0.0.1",
+  "description": "Bot discord thing",
+  "main": "bot.js",
+  "author": "Fezezen",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.3.2",
+    "discord.js-musicbot-addon": "^1.10.3-aplha",
+    "ffmpeg-binaries": "^3.2.2-3",
+    "google-images": "^2.1.0",
+    "npm": "^5.8.0",
+    "npm-save": "^1.0.2",
+    "opusscript": "0.0.6"
+  }
+}
