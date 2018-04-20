@@ -5,6 +5,12 @@
   "main": "bot.js",
   "author": "Fezezen",
   "license": "ISC",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "engines": {
+    "node": "8.4.0"
+  },
   "dependencies": {
     "discord.js": "^11.3.2",
     "discord.js-musicbot-addon": "^1.10.3-aplha",
@@ -12,6 +18,7 @@
     "google-images": "^2.1.0",
     "npm": "^5.8.0",
     "npm-save": "^1.0.2",
-    "opusscript": "0.0.6"
+    "opusscript": "0.0.6",
+    "express": "^4.16.3"
   }
 }
