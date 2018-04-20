@@ -8,7 +8,7 @@ var CustomCmds = require("./customCmds.json")
 const client = new Discord.Client();
 
 const music = new Music(client, {
-  youtubeKey: 'AIzaSyBAdZcF3ETldbk6qeEeX_arxQtVPivI2VQ',
+  youtubeKey: process.env.YOUTUBE_TOKEN,
   anyoneCanSkip:true,
   defVolume:25,
   anyoneCanLeave:true
@@ -203,11 +203,11 @@ client.on("message", async message => {
 				let dir = sendLoveImages[num];
 				
 				if (args[1] != "false") {
-					person.sendMessage("From "+message.author.username, {
+					person.send("From "+message.author.username, {
 						file: dir
 					});
 				} else {
-					person.sendMessage("From somebody who likes you.", {
+					person.send("From somebody who likes you.", {
 						file: dir
 					});
 				}
@@ -216,9 +216,22 @@ client.on("message", async message => {
 		}
 		
 		if (command === `${botSettings.prefix}say`) {
-			message.delete(500)
+			message.delete(500);
 			message.channel.send(message.content.slice(5, message.content.length));
 		}
+    
+    if (command === `${botSettings.prefix}dm`) {
+        if (message.mentions.members.first()) {
+          let person = message.mentions.members.first();
+          let messagetoSend = "";
+          
+          for (var i = 1; i < args.length; i++) {
+            messagetoSend = messagetoSend + args[i] + " ";
+          }
+          
+          person.send(messagetoSend);
+			  }
+    }
 		
 		for (var i = 0; i < CustomCmds.cmds.length; i++) { 
 			let cmd = CustomCmds.cmds[i];
