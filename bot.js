@@ -3,7 +3,8 @@ const Music = require('discord.js-musicbot-addon');
 const Discord = require("discord.js");
 const GoogleImages = require('google-images'); 
 const fileSystem = require('fs'); 
-var CustomCmds = require("./customCmds.json")
+var CustomCmds = require("./customCmds.json");
+const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', 'AIzaSyC19l29lSL8HpXUXp0u-4mR-Wl1hLh7awY');
 
 const client = new Discord.Client();
 
@@ -70,9 +71,23 @@ var slapGifs = [
 	"https://78.media.tumblr.com/tumblr_m7qfr8JBpc1rukqfxo1_500.gif"
 ]
 
+// Keep Alive
+const http = require('http');
+const express = require('express');
+const app = express();
+app.get("/", (request, response) => {
+  console.log(Date.now() + " Ping Received");
+  response.sendStatus(200);
+});
+app.listen(process.env.PORT);
+setInterval(() => {
+  http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
+}, 60000);
+
 function print(string) {
 	console.log(string);
 }
+//
 
 function findPhrase(phrase,table) {
 	let lower = phrase.toLowerCase();
@@ -219,7 +234,7 @@ client.on("message", async message => {
 			message.delete(500);
 			message.channel.send(message.content.slice(5, message.content.length));
 		}
-    
+        
     if (command === `${botSettings.prefix}dm`) {
         if (message.mentions.members.first()) {
           let person = message.mentions.members.first();
@@ -231,6 +246,15 @@ client.on("message", async message => {
           
           person.send(messagetoSend);
 			  }
+    }
+    
+    if (command === `${botSettings.prefix}image`) {
+        let searchTerm = args[0];
+      
+        google_client.search(searchTerm)
+        .then(images => {
+           message.channel.send("",{file: images[1].url});
+        });
     }
 		
 		for (var i = 0; i < CustomCmds.cmds.length; i++) { 
