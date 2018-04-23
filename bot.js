@@ -4,7 +4,7 @@ const Discord = require("discord.js");
 const GoogleImages = require('google-images'); 
 const fileSystem = require('fs'); 
 var CustomCmds = require("./customCmds.json");
-const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', 'AIzaSyC19l29lSL8HpXUXp0u-4mR-Wl1hLh7awY');
+const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', process.env.GOOGLE_KEY);
 
 const client = new Discord.Client();
 
@@ -35,9 +35,10 @@ var greetings = [
 
 var goodnights = [
 	"Night",
-	"Nighty",
+	"Nighty Night",
 	"gn",
-	"n",
+	"Night",
+  "Good night"
 ]
 
 var pettedGifs = [
@@ -82,7 +83,7 @@ app.get("/", (request, response) => {
 app.listen(process.env.PORT);
 setInterval(() => {
   http.get(`http://${process.env.PROJECT_DOMAIN}.glitch.me/`);
-}, 60000);
+}, 180000);
 
 function print(string) {
 	console.log(string);
@@ -109,7 +110,11 @@ function helpMessage() {
 	"!sendlove [mention] [from message] | Sends a DM to a person you mention, add false if you don't want them to know it's from you\n"+
 	"!create_cmd [name of cmd (no spaces)] [what she'll reply to the cmd with] | Creates a custom command that is saved to the bot's local storage so it can be used even after the bot is restarted\n"+
 	"!remove_cmd [name of cmd] | will remove a custom cmd\n"+
-	"!pet | Pet Tsumiki```";
+	"!pet | Pet Tsumiki\n"+
+  "!slap | She'll respond in different ways\n"+
+  "!say [what you want her to say] | She'll say anything you want, and delete the command if she has the right permissions\n"+
+  "!dm [mention a user] | She'll send anything you want to the person you mentioned, I'll probably get rid of this cmd\n"+
+  "!image [search term] | She'll search google for an image of the search term you put in and post it```";
 	
 	return message;
 }
@@ -245,18 +250,41 @@ client.on("message", async message => {
           }
           
           person.send(messagetoSend);
+          
+          message.delete(200);
 			  }
     }
     
     if (command === `${botSettings.prefix}image`) {
-        let searchTerm = args[0];
+        let searchTerm = message.content.slice(7, message.content.length);
       
         google_client.search(searchTerm)
         .then(images => {
-           message.channel.send("",{file: images[1].url});
+          let embed = new Discord.RichEmbed()
+          .setImage(images[Math.floor(Math.random()*images.length)].url)
+				  .setDescription("I'm not responsible for what this image appears as.");
+          
+          message.channel.send(embed);
         });
     }
 		
+     if (command === `${botSettings.prefix}r34`) {
+       if (message.channel.nsfw) {
+          let searchTerm = message.content.slice(5, message.content.length);
+         
+          google_client.search(searchTerm+" hentai porn")
+          .then(images => {
+              let embed = new Discord.RichEmbed()
+            .setImage(images[Math.floor(Math.random()*images.length)].url)
+				    .setDescription("I'm not responsible for what this image appears as.");
+          
+            message.channel.send(embed);
+          });
+       } else {
+           message.channel.send("This channel isn't a NSFW channel.");
+       }
+    }
+    
 		for (var i = 0; i < CustomCmds.cmds.length; i++) { 
 			let cmd = CustomCmds.cmds[i];
 			if (cmd && cmd.name && cmd.reply && command == botSettings.prefix+cmd.name) {
@@ -299,13 +327,21 @@ client.on("message", async message => {
 		
 			
 	} else if(command == mentionID) {
-		if (findPhrase(args[0],greetings)) {
+    let mergedArgs = "";
+    
+    for (var i = 1; i < args.length; i++) { 
+				let arg = args[i];
+				
+				mergedArgs = mergedArgs + arg + " ";
+			}
+    
+		if (findPhrase(mergedArgs,greetings)) {
 			let greet = greetings[Math.floor(Math.random()*greetings.length)]
 						
 			message.reply(greet);
 		}
 		
-		if (findPhrase(args[0],goodnights)) {
+		if (findPhrase(mergedArgs,goodnights)) {
 			message.reply("Nighty night~");
 		}
 	}
