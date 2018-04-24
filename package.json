@@ -16,11 +16,12 @@
     "discord.js-musicbot-addon": "^1.10.3",
     "ffmpeg-binaries": "^3.2.2",
     "google-images": "^2.1.0",
-    "npm": "^5.8.0",
+    "npm": "^6.0.0",
     "npm-save": "^1.0.2",
     "opusscript": "0.0.6",
     "express": "^4.16.3",
     "free-google-image-search": "^1.0.0",
-    "random-puppy": "^1.1.0"
+    "random-puppy": "^1.1.0",
+    "booru": "^0.5.0"
   }
 }

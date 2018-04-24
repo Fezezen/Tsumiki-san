@@ -6,6 +6,7 @@ const fileSystem = require('fs');
 var CustomCmds = require("./customCmds.json");
 const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', process.env.GOOGLE_KEY);
 const user_stats = require("./user-stats.json");
+const booru = require('booru');
 
 const client = new Discord.Client();
 
@@ -115,7 +116,9 @@ function helpMessage() {
   "!slap | She'll respond in different ways\n"+
   "!say [what you want her to say] | She'll say anything you want, and delete the command if she has the right permissions\n"+
   "!dm [mention a user] | She'll send anything you want to the person you mentioned, I'll probably get rid of this cmd\n"+
-  "!image [search term] | She'll search google for an image of the search term you put in and post it```";
+  "!image [search term] | She'll search google for an image of the search term you put in and post it\n"+
+  "!r34 [tags] | You already know what this does bud\n"+
+  "!fight [fighter1] [fighter2] | puts 2 fighters against each other to see who would win a death battle```";
 	
 	return message;
 }
@@ -385,17 +388,31 @@ client.on("message", async message => {
     }
 		
      if (command === `${botSettings.prefix}r34`) {
+       
        if (message.channel.nsfw) {
-          let searchTerm = message.content.slice(5, message.content.length);
-         
-          google_client.search(searchTerm+" hentai porn")
-          .then(images => {
-              let embed = new Discord.RichEmbed()
-            .setImage(images[Math.floor(Math.random()*images.length)].url)
-				    .setDescription("I'm not responsible for what this image appears as.");
-          
-            message.channel.send(embed);
-          });
+          try {
+                const booruData = await booru.search('rule34.xxx', [args[0]], {
+                  'limit': 1,
+                  'random': true
+                }).then(booru.commonfy)
+                .then(images => {
+                // Log the direct link to each image
+                for (let image of images) {
+                  console.log(image.common.file_url)
+                }});
+                
+
+                 if (booruData) {
+                   message.delete(200);
+
+                   return message.channel.send(`Score: ${booruData[0].common.score}\n Image: ${booruData[0].common.file_url}`);
+                }
+
+            return message.reply('⚠️ No juicy images found.');
+          } catch (BooruError) {
+            print(BooruError);
+            return message.reply('⚠️ No juicy images found.(err)');
+          }       
        } else {
            message.channel.send("This channel isn't a NSFW channel.");
        }
@@ -440,6 +457,29 @@ client.on("message", async message => {
 				});
 			}
 		}    
+    
+    if (command === `${botSettings.prefix}avatar`) {
+        let person = message.mentions.members.first();
+      
+        if (person) {
+           message.channel.send(person.avatarURL); 
+        }
+    }
+    
+    if (command === `${botSettings.prefix}fight`) {
+        let fighter1 = args[0];
+        let fighter2 = args[1];
+      
+        if (fighter1 && fighter2) {
+          let winner = Math.floor(Math.random()*2);
+          
+          if (winner == 1) {
+            message.channel.send(fighter1+" won!"); 
+          } else {
+            message.channel.send(fighter2+" won!"); 
+          }
+        }
+    }
 			
 	} else if(command == mentionID) {
     let mergedArgs = "";

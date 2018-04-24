@@ -1,11 +1,12 @@
 dependencies:
+  booru: 0.5.0
   discord.js: 11.3.2
   discord.js-musicbot-addon: 1.10.3
   express: 4.16.3
   ffmpeg-binaries: 3.2.2
   free-google-image-search: 1.0.0
   google-images: 2.1.0
-  npm: 5.8.0
+  npm: 6.0.0
   npm-save: 1.0.2
   opusscript: 0.0.6
   random-puppy: 1.1.0
@@ -169,6 +170,13 @@ packages:
       node: '>=4.0.0'
     resolution:
       integrity: sha512-Z5BTk6ZRe4tXXQlkqftmsAUANpXmuwlsF5Oov8ThoMbQRzdGTA1ngYRW160GexgOgjsFOKJz0LYhoNi+2AMBUw==
+  /booru/0.5.0:
+    dependencies:
+      snekfetch: 3.6.4
+      xml2js: 0.4.19
+    dev: false
+    resolution:
+      integrity: sha512-l48/Q69I2cgmuZr5JhORNcUJfevgEhr7ipMH4TpHm70bg+7fkyCnm68SgECY9BYz7V9ZOQTyKDcsyUCdjNb1UA==
   /buffer-equal-constant-time/1.0.1:
     dev: false
     resolution:
@@ -1188,7 +1196,7 @@ packages:
     dev: false
     resolution:
       integrity: sha1-33w+1aJ3w/nUtdgZsFMR0QogCuY=
-  /npm/5.8.0:
+  /npm/6.0.0:
     bundledDependencies:
       - abbrev
       - ansi-regex
@@ -1196,6 +1204,7 @@ packages:
       - ansistyles
       - aproba
       - archy
+      - byte-size
       - cacache
       - call-limit
       - bluebird
@@ -1210,6 +1219,7 @@ packages:
       - detect-newline
       - dezalgo
       - editor
+      - figgy-pudding
       - find-npm-prefix
       - fs-vacuum
       - fs-write-stream-atomic
@@ -1229,6 +1239,7 @@ packages:
       - JSONStream
       - lazy-property
       - libcipm
+      - libnpmhook
       - libnpx
       - lockfile
       - lodash._baseindexof
@@ -1249,13 +1260,16 @@ packages:
       - move-concurrently
       - nopt
       - normalize-package-data
+      - npm-audit-report
       - npm-cache-filename
       - npm-lifecycle
       - npm-install-checks
       - npm-package-arg
       - npm-packlist
+      - npm-pick-manifest
       - npm-profile
       - npm-registry-client
+      - npm-registry-fetch
       - npm-user-validate
       - npmlog
       - once
@@ -1299,9 +1313,12 @@ packages:
       - write-file-atomic
       - safe-buffer
       - worker-farm
+      - tiny-relative-date
+      - cli-columns
+      - node-gyp
     dev: false
     resolution:
-      integrity: sha512-DowXzQwtSWDtbAjuWecuEiismR0VdNEYaL3VxNTYTdW6AGkYxfGk9LUZ/rt6etEyiH4IEk95HkJeGfXE5Rz9xQ==
+      integrity: sha512-EtM7gNAgMdQeUh8SW2bsaogywVS37lPhf2GYAf2vxR1pktxxT02CW8BHrx59MSbG3ZrRBbcOhpe03gts+eAbdA==
   /number-is-nan/1.0.1:
     dev: false
     engines:
@@ -1892,6 +1909,19 @@ packages:
     dev: false
     resolution:
       integrity: sha512-ZGh/8kF9rrRNffkLFV4AzhvooEclrOH0xaugmqGsIfFgOE/pIz4fMc4Ef+5HSQqTEug2S9JZIWDR47duDSLfaA==
+  /xml2js/0.4.19:
+    dependencies:
+      sax: 1.2.4
+      xmlbuilder: 9.0.7
+    dev: false
+    resolution:
+      integrity: sha512-esZnJZJOiJR9wWKMyuvSE1y6Dq5LCuJanqhxslH2bxM6duahNZ+HMpCLhBQGZkbX6xRf8x1Y2eJlgt2q3qo49Q==
+  /xmlbuilder/9.0.7:
+    dev: false
+    engines:
+      node: '>=4.0'
+    resolution:
+      integrity: sha1-Ey7mPS7FVlxVfiD0wi35rKaGsQ0=
   /xtend/4.0.1:
     dev: false
     engines:
@@ -1952,13 +1982,14 @@ registry: 'https://registry.npmjs.org/'
 shrinkwrapMinorVersion: 4
 shrinkwrapVersion: 3
 specifiers:
+  booru: ^0.5.0
   discord.js: ^11.3.2
   discord.js-musicbot-addon: ^1.10.3
   express: ^4.16.3
   ffmpeg-binaries: ^3.2.2
   free-google-image-search: ^1.0.0
   google-images: ^2.1.0
-  npm: ^5.8.0
+  npm: ^6.0.0
   npm-save: ^1.0.2
   opusscript: 0.0.6
   random-puppy: ^1.1.0
