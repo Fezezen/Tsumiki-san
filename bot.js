@@ -388,22 +388,30 @@ client.on("message", async message => {
     }
 		
      if (command === `${botSettings.prefix}r34`) {
+       
        if (message.channel.nsfw) {
           try {
-                const booruData = await booru.search('r34', args, {
+                const booruData = await booru.search('rule34.xxx', [args[0]], {
                   'limit': 1,
                   'random': true
-                }).then(booru.commonfy);
+                }).then(booru.commonfy)
+                .then(images => {
+                // Log the direct link to each image
+                for (let image of images) {
+                  console.log(image.common.file_url)
+                }});
+                
 
                  if (booruData) {
                    message.delete(200);
 
-                   return message.send(booruData[0].common.file_url);
+                   return message.channel.send(`Score: ${booruData[0].common.score}\n Image: ${booruData[0].common.file_url}`);
                 }
 
             return message.reply('⚠️ No juicy images found.');
           } catch (BooruError) {
-            return message.reply('⚠️ No juicy images found.');
+            print(BooruError);
+            return message.reply('⚠️ No juicy images found.(err)');
           }       
        } else {
            message.channel.send("This channel isn't a NSFW channel.");

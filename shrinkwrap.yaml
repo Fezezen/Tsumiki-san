@@ -6,7 +6,7 @@ dependencies:
   ffmpeg-binaries: 3.2.2
   free-google-image-search: 1.0.0
   google-images: 2.1.0
-  npm: 5.8.0
+  npm: 6.0.0
   npm-save: 1.0.2
   opusscript: 0.0.6
   random-puppy: 1.1.0
@@ -1196,7 +1196,7 @@ packages:
     dev: false
     resolution:
       integrity: sha1-33w+1aJ3w/nUtdgZsFMR0QogCuY=
-  /npm/5.8.0:
+  /npm/6.0.0:
     bundledDependencies:
       - abbrev
       - ansi-regex
@@ -1204,6 +1204,7 @@ packages:
       - ansistyles
       - aproba
       - archy
+      - byte-size
       - cacache
       - call-limit
       - bluebird
@@ -1218,6 +1219,7 @@ packages:
       - detect-newline
       - dezalgo
       - editor
+      - figgy-pudding
       - find-npm-prefix
       - fs-vacuum
       - fs-write-stream-atomic
@@ -1237,6 +1239,7 @@ packages:
       - JSONStream
       - lazy-property
       - libcipm
+      - libnpmhook
       - libnpx
       - lockfile
       - lodash._baseindexof
@@ -1257,13 +1260,16 @@ packages:
       - move-concurrently
       - nopt
       - normalize-package-data
+      - npm-audit-report
       - npm-cache-filename
       - npm-lifecycle
       - npm-install-checks
       - npm-package-arg
       - npm-packlist
+      - npm-pick-manifest
       - npm-profile
       - npm-registry-client
+      - npm-registry-fetch
       - npm-user-validate
       - npmlog
       - once
@@ -1307,9 +1313,12 @@ packages:
       - write-file-atomic
       - safe-buffer
       - worker-farm
+      - tiny-relative-date
+      - cli-columns
+      - node-gyp
     dev: false
     resolution:
-      integrity: sha512-DowXzQwtSWDtbAjuWecuEiismR0VdNEYaL3VxNTYTdW6AGkYxfGk9LUZ/rt6etEyiH4IEk95HkJeGfXE5Rz9xQ==
+      integrity: sha512-EtM7gNAgMdQeUh8SW2bsaogywVS37lPhf2GYAf2vxR1pktxxT02CW8BHrx59MSbG3ZrRBbcOhpe03gts+eAbdA==
   /number-is-nan/1.0.1:
     dev: false
     engines:
@@ -1980,7 +1989,7 @@ specifiers:
   ffmpeg-binaries: ^3.2.2
   free-google-image-search: ^1.0.0
   google-images: ^2.1.0
-  npm: ^5.8.0
+  npm: ^6.0.0
   npm-save: ^1.0.2
   opusscript: 0.0.6
   random-puppy: ^1.1.0
