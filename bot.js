@@ -5,6 +5,7 @@ const GoogleImages = require('google-images');
 const fileSystem = require('fs'); 
 var CustomCmds = require("./customCmds.json");
 const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', process.env.GOOGLE_KEY);
+const user_stats = require("./user-stats.json");
 
 const client = new Discord.Client();
 
@@ -155,6 +156,69 @@ function remove_cmd(nameofcmd) {
 	}
 }
 
+//User Stats handler 
+  function check_user(userId,name) {
+    for (var i = 0; i < user_stats.users.length; i++) { 
+      let current_user = user_stats.users[i];
+      
+      if (!current_user.username) {
+        current_user.username = name;
+      }
+      
+      if (current_user.id == userId) {
+          return true;
+      }
+    }
+  }
+
+  function add_user(user) {
+    user_stats.users.push({"id":user.id,"xp":0,"xp_needed":10,"lvl":1});
+    
+    var data = user_stats;
+
+		var jsonData = JSON.stringify(data);
+    
+    fileSystem.writeFile("user-stats.json", jsonData, function(err) {
+				if (err) {
+					console.log(err);
+				}
+		});
+  }
+  
+  function getStats(userid) {
+      for (var i = 0; i < user_stats.users.length; i++) { 
+        let current_user = user_stats.users[i];
+        
+        return current_user;
+      }
+  }
+
+  function user_addxp(user,message) {
+    for (var i = 0; i < user_stats.users.length; i++) { 
+      let current_user = user_stats.users[i];
+      
+      if (current_user.id == user.id) {
+        current_user.xp = current_user.xp + Math.floor(Math.random()*25);
+        
+        if (!current_user.xp_needed) {
+           current_user.xp_needed = 10; 
+        }
+        
+        var data = user_stats;
+
+        var jsonData = JSON.stringify(data);
+
+        fileSystem.writeFile("user-stats.json", jsonData, function(err) {
+            if (err) {
+              console.log(err);
+            }
+        });
+        break;
+      }
+    }
+  }
+//
+
 client.on("message", async message => {
 	if (message.author.bot) return;
 	if (message.channel.type == "dm") return;
@@ -162,16 +226,68 @@ client.on("message", async message => {
 	let messageArray = message.content.split(" ");
 	let command = messageArray[0];
 	let args = messageArray.slice(1);		
+  
+  //User-stats
+    if (check_user(message.author.id)) {
+      user_addxp(message.author,message);
+      for (var i = 0; i < user_stats.users.length; i++) { 
+        let current_user = user_stats.users[i];
+        
+        if (current_user.xp >= current_user.xp_needed) {
+            current_user.lvl = current_user.lvl + 1;
+            current_user.xp_needed = current_user.xp_needed+(current_user.xp_needed*current_user.lvl);
+            
+            let embed = new Discord.RichEmbed()
+            .setTitle("Level up!")
+            .setThumbnail("https://cdn2.iconfinder.com/data/icons/retro-video-gaming/32/one_level_up_gaming-512.png")
+            .setFooter("Lvl : "+current_user.lvl);
+
+            message.channel.send(embed);
+          
+            var data = user_stats;
+
+            var jsonData = JSON.stringify(data);
+          
+            fileSystem.writeFile("user-stats.json", jsonData, function(err) {
+                if (err) {
+                  console.log(err);
+                }
+            });
+            break;
+        }
+      }
+    } else {
+      add_user(message.author); 
+      print("User: "+message.author.id+" added");
+    }
+  //
 		
 	if(command.startsWith(botSettings.prefix)) {
 		
-		if (command === `${botSettings.prefix}userinfo`) {
+		if (command === `${botSettings.prefix}profile`) {
+      let user_stats = getStats(message.author.id);
+      
 			let embed = new Discord.RichEmbed()
 				.setAuthor(message.author.username)
-				.setDescription("Your info");
+				.setThumbnail(message.author.avatarURL)
+        .addField("Your lvl is: "+user_stats.lvl,"Xp needed till next lvl:"+(user_stats.xp_needed-user_stats.xp));
 				
-			message.channel.sendEmbed(embed);
+			message.channel.send(embed);
 		}
+    
+    if (command === `${botSettings.prefix}rest_stats`) {
+       if (message.author.id == botSettings.owner_id) {
+          var data = {"cmds":[]};
+
+          var jsonData = JSON.stringify(data);
+          
+          fileSystem.writeFile("user-stats.json", jsonData, function(err) {
+              if (err) {
+                console.log(err);
+              }
+          });
+       }
+    }
 		
 		if (command === `${botSettings.prefix}help`) {
 			message.author.sendMessage(helpMessage());
@@ -323,8 +439,7 @@ client.on("message", async message => {
 					}
 				});
 			}
-		}
-		
+		}    
 			
 	} else if(command == mentionID) {
     let mergedArgs = "";
