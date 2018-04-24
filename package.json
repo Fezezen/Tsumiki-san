@@ -21,6 +21,7 @@
     "opusscript": "0.0.6",
     "express": "^4.16.3",
     "free-google-image-search": "^1.0.0",
-    "random-puppy": "^1.1.0"
+    "random-puppy": "^1.1.0",
+    "booru": "^0.5.0"
   }
 }
