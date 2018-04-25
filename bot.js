@@ -6,7 +6,8 @@ const fileSystem = require('fs');
 var CustomCmds = require("./customCmds.json");
 const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', process.env.GOOGLE_KEY);
 const user_stats = require("./user-stats.json");
-const booru = require('booru');
+const Kaori = require('kaori');
+const kaori = new Kaori();
 
 const client = new Discord.Client();
 
@@ -389,30 +390,13 @@ client.on("message", async message => {
 		
      if (command === `${botSettings.prefix}r34`) {
        
-       if (message.channel.nsfw) {
-          try {
-                const booruData = await booru.search('rule34.xxx', [args[0]], {
-                  'limit': 1,
-                  'random': true
-                }).then(booru.commonfy)
-                .then(images => {
-                // Log the direct link to each image
-                for (let image of images) {
-                  console.log(image.common.file_url)
-                }});
-                
-
-                 if (booruData) {
-                   message.delete(200);
-
-                   return message.channel.send(`Score: ${booruData[0].common.score}\n Image: ${booruData[0].common.file_url}`);
-                }
-
-            return message.reply('⚠️ No juicy images found.');
-          } catch (BooruError) {
-            print(BooruError);
-            return message.reply('⚠️ No juicy images found.(err)');
-          }       
+       if (message.channel.nsfw) {            
+         kaori.search('r34', { tags: args, limit: 1, random: true })
+          .then(images => 
+              message.channel.send("Score : "+images[0].common.score,{file:images[0].common.fileURL})
+          )
+          .catch(err => console.error(err));
+            
        } else {
            message.channel.send("This channel isn't a NSFW channel.");
        }
