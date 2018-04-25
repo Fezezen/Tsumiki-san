@@ -5,9 +5,11 @@ const GoogleImages = require('google-images');
 const fileSystem = require('fs'); 
 var CustomCmds = require("./customCmds.json");
 const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', process.env.GOOGLE_KEY);
-const user_stats = require("./user-stats.json");
 const Kaori = require('kaori');
 const kaori = new Kaori();
+const jokes = require("./jokes.json");
+var girls_database = require("./user_girl_zoos.json");
+var girls = require("./girls.json")
 
 const client = new Discord.Client();
 
@@ -15,7 +17,8 @@ const music = new Music(client, {
   youtubeKey: process.env.YOUTUBE_TOKEN,
   anyoneCanSkip:true,
   defVolume:25,
-  anyoneCanLeave:true
+  anyoneCanLeave:true,
+  botPrefix:botSettings.prefix
 });
 
 var mentionID;
@@ -108,18 +111,19 @@ function findPhrase(phrase,table) {
 }
 
 function helpMessage() {
-	let message = "```!musichelp | Gives you help with the Music player\n"+
-	"!rolldie | Lets you roll die for a number between 1 and 6\n"+
-	"!sendlove [mention] [from message] | Sends a DM to a person you mention, add false if you don't want them to know it's from you\n"+
-	"!create_cmd [name of cmd (no spaces)] [what she'll reply to the cmd with] | Creates a custom command that is saved to the bot's local storage so it can be used even after the bot is restarted\n"+
-	"!remove_cmd [name of cmd] | will remove a custom cmd\n"+
-	"!pet | Pet Tsumiki\n"+
-  "!slap | She'll respond in different ways\n"+
-  "!say [what you want her to say] | She'll say anything you want, and delete the command if she has the right permissions\n"+
-  "!dm [mention a user] | She'll send anything you want to the person you mentioned, I'll probably get rid of this cmd\n"+
-  "!image [search term] | She'll search google for an image of the search term you put in and post it\n"+
-  "!r34 [tags] | You already know what this does bud\n"+
-  "!fight [fighter1] [fighter2] | puts 2 fighters against each other to see who would win a death battle```";
+	let message = "```"+botSettings.prefix+"musichelp | Gives you help with the Music player\n"+
+	botSettings.prefix+"rolldie | Lets you roll die for a number between 1 and 6\n"+
+	botSettings.prefix+"sendlove [mention] [from message] | Sends a DM to a person you mention, add false if you don't want them to know it's from you\n"+
+	botSettings.prefix+"create_cmd [name of cmd (no spaces)] [what she'll reply to the cmd with] | Creates a custom command that is saved to the bot's local storage so it can be used even after the bot is restarted\n"+
+	botSettings.prefix+"remove_cmd [name of cmd] | will remove a custom cmd\n"+
+  botSettings.prefix+"pet | Pet Tsumiki\n"+
+  botSettings.prefix+"slap | She'll respond in different ways\n"+
+  botSettings.prefix+"say [what you want her to say] | She'll say anything you want, and delete the command if she has the right permissions\n"+
+  botSettings.prefix+"dm [mention a user] | She'll send anything you want to the person you mentioned, I'll probably get rid of this cmd\n"+
+  botSettings.prefix+"image [search term] | She'll search google for an image of the search term you put in and post it\n"+
+  botSettings.prefix+"r34 [tags] | You already know what this does bud\n"+
+  botSettings.prefix+"fight [fighter1] [fighter2] | puts 2 fighters against each other to see who would win a death battle\n"+
+  botSettings.prefix+"joke | tells you a joke```";
 	
 	return message;
 }
@@ -127,7 +131,7 @@ function helpMessage() {
 function randomAct() {
 	let act = activitys[Math.floor(Math.random()*activitys.length)];
 	
-	client.user.setActivity(act.name+' | !help for help with cmds',{ type: act.type})
+	client.user.setActivity(act.name+' | ts!help for help with cmds',{ type: act.type})
 }
 
 client.on("ready", async() => {
@@ -160,10 +164,11 @@ function remove_cmd(nameofcmd) {
 	}
 }
 
-//User Stats handler 
-  function check_user(userId,name) {
-    for (var i = 0; i < user_stats.users.length; i++) { 
-      let current_user = user_stats.users[i];
+
+// Girl zoos
+  function girls_check_user(userId,name) {
+    for (var i = 0; i < girls_database.users.length; i++) { 
+      let current_user = girls_database.users[i];
       
       if (!current_user.username) {
         current_user.username = name;
@@ -175,10 +180,31 @@ function remove_cmd(nameofcmd) {
     }
   }
 
-  function add_user(user) {
-    user_stats.users.push({"id":user.id,"xp":0,"xp_needed":10,"lvl":1});
+  function girls_add_user(user) {
+    girls_database.users.push({"id":user,"girls":[]});
     
-    var data = user_stats;
+    var data = girls_database;
+
+		var jsonData = JSON.stringify(data);
+    
+    fileSystem.writeFile("user_girl_zoos.json", jsonData, function(err) {
+				if (err) {
+					console.log(err);
+				}
+		});
+  }
+
+  function caught_girl(userId,girl) {
+    for (var i = 0; i < girls_database.users.length; i++) { 
+      let current_user = girls_database.users[i];
+      
+      if (current_user.id == userId) {
+        current_user.girls.push(girl);    
+        break;
+      }
+    }
+    
+    var data = girls_database;
 
 		var jsonData = JSON.stringify(data);
     
@@ -187,39 +213,6 @@ function remove_cmd(nameofcmd) {
 					console.log(err);
 				}
 		});
-  }
-  
-  function getStats(userid) {
-      for (var i = 0; i < user_stats.users.length; i++) { 
-        let current_user = user_stats.users[i];
-        
-        return current_user;
-      }
-  }
-
-  function user_addxp(user,message) {
-    for (var i = 0; i < user_stats.users.length; i++) { 
-      let current_user = user_stats.users[i];
-      
-      if (current_user.id == user.id) {
-        current_user.xp = current_user.xp + Math.floor(Math.random()*25);
-        
-        if (!current_user.xp_needed) {
-           current_user.xp_needed = 10; 
-        }
-        
-        var data = user_stats;
-
-        var jsonData = JSON.stringify(data);
-
-        fileSystem.writeFile("user-stats.json", jsonData, function(err) {
-            if (err) {
-              console.log(err);
-            }
-        });
-        break;
-      }
-    }
   }
 //
 
@@ -231,68 +224,14 @@ client.on("message", async message => {
 	let command = messageArray[0];
 	let args = messageArray.slice(1);		
   
-  //User-stats
-    if (check_user(message.author.id)) {
-      user_addxp(message.author,message);
-      for (var i = 0; i < user_stats.users.length; i++) { 
-        let current_user = user_stats.users[i];
-        
-        if (current_user.xp >= current_user.xp_needed) {
-            current_user.lvl = current_user.lvl + 1;
-            current_user.xp_needed = current_user.xp_needed+(current_user.xp_needed*current_user.lvl);
-            
-            let embed = new Discord.RichEmbed()
-            .setTitle("Level up!")
-            .setThumbnail("https://cdn2.iconfinder.com/data/icons/retro-video-gaming/32/one_level_up_gaming-512.png")
-            .setFooter("Lvl : "+current_user.lvl);
-
-            message.channel.send(embed);
-          
-            var data = user_stats;
-
-            var jsonData = JSON.stringify(data);
-          
-            fileSystem.writeFile("user-stats.json", jsonData, function(err) {
-                if (err) {
-                  console.log(err);
-                }
-            });
-            break;
-        }
-      }
-    } else {
-      add_user(message.author); 
-      print("User: "+message.author.id+" added");
+  
+  //Girls
+    if (!girls_check_user(message.author.id)) {
+      girls_add_user(message.author.id);
     }
   //
 		
-	if(command.startsWith(botSettings.prefix)) {
-		
-		if (command === `${botSettings.prefix}profile`) {
-      let user_stats = getStats(message.author.id);
-      
-			let embed = new Discord.RichEmbed()
-				.setAuthor(message.author.username)
-				.setThumbnail(message.author.avatarURL)
-        .addField("Your lvl is: "+user_stats.lvl,"Xp needed till next lvl:"+(user_stats.xp_needed-user_stats.xp));
-				
-			message.channel.send(embed);
-		}
-    
-    if (command === `${botSettings.prefix}rest_stats`) {
-       if (message.author.id == botSettings.owner_id) {
-          var data = {"cmds":[]};
-
-          var jsonData = JSON.stringify(data);
-          
-          fileSystem.writeFile("user-stats.json", jsonData, function(err) {
-              if (err) {
-                console.log(err);
-              }
-          });
-       }
-    }
-		
+	if(command.startsWith(botSettings.prefix)) {		
 		if (command === `${botSettings.prefix}help`) {
 			message.author.sendMessage(helpMessage());
 		}
@@ -464,7 +403,59 @@ client.on("message", async message => {
           }
         }
     }
-			
+    
+    if (command === `${botSettings.prefix}joke`) {
+      let joke = jokes.jokes[Math.floor(Math.random()*jokes.jokes.length)];
+      
+      message.channel.send(joke);
+    }
+    
+    // Girls
+    if (girls_check_user(message.author.id)) {
+      if (command === `${botSettings.prefix}hunt`) {
+        let chance = Math.floor(Math.random()*2)
+        
+        if (chance == 1) {
+            let girl = girls.girls[Math.floor(Math.random()*girls.girls.length)];
+            print(girl);
+            let girl_chance = Math.floor(Math.random()*girl.chance);
+          
+            if (girl_chance == 1) {
+              caught_girl(message.author.id,girl);
+              
+              message.channel.send(message.author.username+" caught a "+girl.name+"!",{file:girl.icon});
+            } else {
+              message.channel.send(message.author.username+" didn't catch anything.");
+            }
+        
+        } else {
+          message.channel.send(message.author.username+" didn't catch anything.");
+        }
+      }
+
+      if (command === `${botSettings.prefix}my_girls`) {
+        let msg = "";
+        
+        for (var i = 0; i < girls_database.users.length; i++) { 
+          let current_user = girls_database.users[i];
+
+          if (current_user.id == message.author.id) {
+            for (var v = 0; v < current_user.girls.length; v++) {
+              msg = msg + current_user.girls[v].name+"\n";
+            }
+            break;
+          }
+        }
+        
+        if (msg != "") {
+           message.channel.send("Here's your zoo list:\n"+msg);
+        } else {
+           message.channel.send("You don't have any girls yet."); 
+        }
+        
+      }
+    }
+		//End
 	} else if(command == mentionID) {
     let mergedArgs = "";
     
