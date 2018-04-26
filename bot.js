@@ -8,8 +8,8 @@ const google_client = new GoogleImages('018071923536050688361:juxrmakrwio', proc
 const Kaori = require('kaori');
 const kaori = new Kaori();
 const jokes = require("./jokes.json");
-var girls_database = require("./user_girl_zoos.json");
-var girls = require("./girls.json")
+var zoo_database = require("./user_zoos.json");
+var animals = require("./animals.json")
 
 const client = new Discord.Client();
 
@@ -166,9 +166,9 @@ function remove_cmd(nameofcmd) {
 
 
 // Girl zoos
-  function girls_check_user(userId,name) {
-    for (var i = 0; i < girls_database.users.length; i++) { 
-      let current_user = girls_database.users[i];
+  function zoo_check_user(userId,name) {
+    for (var i = 0; i < zoo_database.users.length; i++) { 
+      let current_user = zoo_database.users[i];
       
       if (!current_user.username) {
         current_user.username = name;
@@ -180,14 +180,14 @@ function remove_cmd(nameofcmd) {
     }
   }
 
-  function girls_add_user(user) {
-    girls_database.users.push({"id":user,"girls":[]});
+  function zoo_add_user(user) {
+    zoo_database.users.push({"id":user,"zoo":[]});
     
-    var data = girls_database;
+    var data = zoo_database;
 
 		var jsonData = JSON.stringify(data);
     
-    fileSystem.writeFile("user_girl_zoos.json", jsonData, function(err) {
+    fileSystem.writeFile("user_zoos.json", jsonData, function(err) {
 				if (err) {
 					console.log(err);
 				}
@@ -195,20 +195,20 @@ function remove_cmd(nameofcmd) {
   }
 
   function caught_girl(userId,girl) {
-    for (var i = 0; i < girls_database.users.length; i++) { 
-      let current_user = girls_database.users[i];
+    for (var i = 0; i < zoo_database.users.length; i++) { 
+      let current_user = zoo_database.users[i];
       
       if (current_user.id == userId) {
-        current_user.girls.push(girl);    
+        current_user.zoo.push(girl);    
         break;
       }
     }
     
-    var data = girls_database;
+    var data = zoo_database;
 
 		var jsonData = JSON.stringify(data);
     
-    fileSystem.writeFile("user-stats.json", jsonData, function(err) {
+    fileSystem.writeFile("user_zoos.json", jsonData, function(err) {
 				if (err) {
 					console.log(err);
 				}
@@ -226,8 +226,8 @@ client.on("message", async message => {
   
   
   //Girls
-    if (!girls_check_user(message.author.id)) {
-      girls_add_user(message.author.id);
+    if (!zoo_check_user(message.author.id)) {
+      zoo_add_user(message.author.id);
     }
   //
 		
@@ -411,14 +411,13 @@ client.on("message", async message => {
     }
     
     // Girls
-    if (girls_check_user(message.author.id)) {
+    if (zoo_check_user(message.author.id)) {
       if (command === `${botSettings.prefix}hunt`) {
         let chance = Math.floor(Math.random()*2)
         
         if (chance == 1) {
-            let girl = girls.girls[Math.floor(Math.random()*girls.girls.length)];
-            print(girl);
-            let girl_chance = Math.floor(Math.random()*girl.chance);
+            let girl = animals.animals[Math.floor(Math.random()*animals.animals.length)];
+            let girl_chance = 1;
           
             if (girl_chance == 1) {
               caught_girl(message.author.id,girl);
@@ -433,15 +432,15 @@ client.on("message", async message => {
         }
       }
 
-      if (command === `${botSettings.prefix}my_girls`) {
+      if (command === `${botSettings.prefix}zoo`) {
         let msg = "";
         
-        for (var i = 0; i < girls_database.users.length; i++) { 
-          let current_user = girls_database.users[i];
+        for (var i = 0; i < zoo_database.users.length; i++) { 
+          let current_user = zoo_database.users[i];
 
           if (current_user.id == message.author.id) {
-            for (var v = 0; v < current_user.girls.length; v++) {
-              msg = msg + current_user.girls[v].name+"\n";
+            for (var v = 0; v < current_user.zoo.length; v++) {
+              msg = msg + current_user.zoo[v].name+"\n";
             }
             break;
           }
@@ -450,7 +449,7 @@ client.on("message", async message => {
         if (msg != "") {
            message.channel.send("Here's your zoo list:\n"+msg);
         } else {
-           message.channel.send("You don't have any girls yet."); 
+           message.channel.send("You don't have anything in your zoo yet."); 
         }
         
       }
