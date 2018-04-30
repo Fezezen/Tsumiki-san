@@ -1987,7 +1987,7 @@ packages:
     resolution:
       integrity: sha512-bjLGzxmwmnVsbMNJefqEgcdj1ewvPIjn7DOguEwYdd6Kg1Mh85y5+fgi6ze4h36xOtHYaw42phzTNhi1QR9u/g==
 registry: 'https://registry.npmjs.org/'
-shrinkwrapMinorVersion: 4
+shrinkwrapMinorVersion: 5
 shrinkwrapVersion: 3
 specifiers:
   discord.js: ^11.3.2

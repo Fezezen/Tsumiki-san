@@ -18,7 +18,7 @@ const music = new Music(client, {
   anyoneCanSkip:true,
   defVolume:25,
   anyoneCanLeave:true,
-  botPrefix:botSettings.prefix
+  botPrefix:"ts!"
 });
 
 var mentionID;
