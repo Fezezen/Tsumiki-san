@@ -296,7 +296,7 @@ client.on("message", async message => {
 		
 		if (command === `${botSettings.prefix}say`) {
 			message.delete(500);
-			message.channel.send(message.content.slice(5, message.content.length));
+			message.channel.send(message.content.slice(6, message.content.length));
 		}
         
     if (command === `${botSettings.prefix}dm`) {
