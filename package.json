@@ -12,16 +12,16 @@
     "node": "8.11.1"
   },
   "dependencies": {
-    "discord.js": "^11.3.2",
-    "discord.js-musicbot-addon": "^1.10.3",
-    "ffmpeg-binaries": "^3.2.2",
-    "google-images": "^2.1.0",
-    "npm": "^6.0.0",
-    "npm-save": "^1.0.2",
-    "opusscript": "0.0.6",
-    "express": "^4.16.3",
+    "discord.js": "^11.4.2",
+    "express": "^4.16.4",
+    "ffmpeg-binaries": "^4.0.0",
     "free-google-image-search": "^1.0.0",
+    "google-images": "^2.1.0",
+    "kaori": "^1.2.0",
+    "npm": "^6.5.0",
+    "npm-save": "^1.0.2",
+    "opusscript": "^0.0.6",
     "random-puppy": "^1.1.0",
-    "kaori": "^1.1.4"
+    "discord.js-musicbot-addon": "^13.4.0"
   }
 }

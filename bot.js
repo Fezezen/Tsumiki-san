@@ -1,5 +1,4 @@
 const botSettings = require("./botSettings.json");
-const Music = require('discord.js-musicbot-addon');
 const Discord = require("discord.js");
 const GoogleImages = require('google-images'); 
 const fileSystem = require('fs'); 
@@ -12,13 +11,10 @@ var zoo_database = require("./user_zoos.json");
 var animals = require("./animals.json")
 
 const client = new Discord.Client();
+client.music = require("discord.js-musicbot-addon");
 
-const music = new Music(client, {
-  youtubeKey: process.env.YOUTUBE_TOKEN,
-  anyoneCanSkip:true,
-  defVolume:25,
-  anyoneCanLeave:true,
-  botPrefix:"ts!"
+client.music.start(client, {
+  youtubeKey: "AIzaSyBAdZcF3ETldbk6qeEeX_arxQtVPivI2VQ"
 });
 
 var mentionID;
@@ -315,12 +311,14 @@ client.on("message", async message => {
     }
     
     if (command === `${botSettings.prefix}image`) {
-        let searchTerm = message.content.slice(7, message.content.length);
-      
+        let searchTerm = message.content.slice(8, message.content.length);
+        print(searchTerm);
         google_client.search(searchTerm)
         .then(images => {
+          let index = Math.floor(Math.random()*Math.min(images.length,10))
+          console.log(index);
           let embed = new Discord.RichEmbed()
-          .setImage(images[Math.floor(Math.random()*images.length)].url)
+          .setImage(images[index].url)
 				  .setDescription("I'm not responsible for what this image appears as.");
           
           message.channel.send(embed);
@@ -380,14 +378,7 @@ client.on("message", async message => {
 				});
 			}
 		}    
-    
-    if (command === `${botSettings.prefix}avatar`) {
-        let person = message.mentions.members.first();
-      
-        if (person) {
-           message.channel.send(person.avatarURL); 
-        }
-    }
+  
     
     if (command === `${botSettings.prefix}fight`) {
         let fighter1 = args[0];
@@ -409,6 +400,15 @@ client.on("message", async message => {
       
       message.channel.send(joke);
     }
+    
+    //Music
+    
+    const suffix = message.content.substring(botSettings.prefix + command.length).trim();
+    
+    if (command === `${botSettings.prefix}play`) {
+      client.music.bot.playFunction(message, suffix);
+    }
+    
     
     // Girls
     if (zoo_check_user(message.author.id)) {
